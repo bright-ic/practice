@@ -6,6 +6,10 @@ let sections = document.querySelectorAll('section');
 let ul = document.querySelector('ul');
 let currentActive;
 
+// this veriable is used to prevent irregular update of nav bar
+// during on scroll event update and navbar click update
+let debounce = false;
+
 /**
  * End Global Variables
  * Start Helper Functions
@@ -55,6 +59,26 @@ const makeScrolling = (targetID) => {
 
 	// use the scrollby window method to scroll to the given top
 	window.scrollBy({ top: originalTop, left: 0, behavior: 'smooth' });
+	// prevent scroll event check
+	debounce = true;
+
+	// enable scrool after 1 seconds
+	setTimeout(() => {
+		debounce = false;
+	}, 1000);
+};
+
+// util to check element in the viewport
+const isInViewPort = (element) => {
+	const bounding = element.getBoundingClientRect();
+	return (
+		bounding.top >= 0 &&
+		bounding.left >= 0 &&
+		bounding.bottom <=
+			(window.innerHeight || document.documentElement.clientHeight) &&
+		bounding.right <=
+			(window.innerWidth || document.documentElement.clientWidth)
+	);
 };
 
 // build the nav
@@ -77,4 +101,35 @@ links.forEach((link, index) => {
 		link.classList.add('active');
 	}
 	link.addEventListener('click', anchorHandler);
+});
+
+// handler function to update the navbar on scroll
+const updateNav = () => {
+	sections.forEach((section) => {
+		const inViewPort = isInViewPort(section);
+		if (inViewPort) {
+			const id = section.getAttribute('id');
+			// remove initial active nav
+			document
+				.querySelector(`a[href='#${currentActive}']`)
+				.classList.remove('active');
+
+			// add new active nav
+			document.querySelector(`a[href='#${id}']`).classList.add('active');
+			// udate current active
+			currentActive = id;
+		}
+	});
+};
+
+// window event listener for scroll event
+let ticking = false;
+window.addEventListener('scroll', () => {
+	if (!ticking && !debounce) {
+		window.requestAnimationFrame(() => {
+			updateNav();
+			ticking = false;
+		});
+		ticking = true;
+	}
 });
