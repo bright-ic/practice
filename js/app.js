@@ -2,8 +2,8 @@
  * Define Global Variables
  * 
 */
-let sections = document.querySelectorAll('section');
-let ul = document.querySelector('ul');
+let sectionElement = document.querySelectorAll('section');
+let ulElement = document.querySelector('ul');
 let currentActive;
 
 // this veriable is used to prevent irregular update of nav bar
@@ -21,7 +21,7 @@ const makeListItem = (id, label) => {
 	return li;
 };
 
-const anchorHandler = (e) => {
+const handleAnchorChange = (e) => {
 	e.preventDefault();
 
 	// get the element hash and remove the #
@@ -90,21 +90,21 @@ sections.forEach((node, index) => {
 		currentActive = id;
 	}
 	// append the created li to the ul element
-	ul.appendChild(newListItem);
+	ulElement.appendChild(newListItem);
 });
 
 // Add class 'active' to section when near top of viewport
-const links = document.querySelectorAll('a[href^="#"]');
-links.forEach((link, index) => {
+const linkItems = document.querySelectorAll('a[href^="#"]');
+linkItems.forEach((link, index) => {
 	// add active class to the first link
 	if (index === 0) {
 		link.classList.add('active');
 	}
-	link.addEventListener('click', anchorHandler);
+	link.addEventListener('click', handleAnchorChange);
 });
 
 // handler function to update the navbar on scroll
-const updateNav = () => {
+const fireNavUpdate = () => {
 	sections.forEach((section) => {
 		const inViewPort = isInViewPort(section);
 		if (inViewPort) {
@@ -123,11 +123,11 @@ const updateNav = () => {
 };
 
 // window event listener for scroll event
-let ticking = false;
+let checks = false;
 window.addEventListener('scroll', () => {
-	if (!ticking && !debounce) {
+	if (!checks && !debounce) {
 		window.requestAnimationFrame(() => {
-			updateNav();
+			fireNavUpdate();
 			ticking = false;
 		});
 		ticking = true;
