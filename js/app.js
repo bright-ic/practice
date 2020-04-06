@@ -105,7 +105,7 @@ linkItems.forEach((link, index) => {
 
 // handler function to update the navbar on scroll
 const fireNavUpdate = () => {
-	sections.forEach((section) => {
+	sectionElement.forEach((section) => {
 		const inViewPort = isInViewPort(section);
 		if (inViewPort) {
 			const id = section.getAttribute('id');
