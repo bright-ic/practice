@@ -82,7 +82,7 @@ const isInViewPort = (element) => {
 };
 
 // build the nav
-sections.forEach((node, index) => {
+sectionElement.forEach((node, index) => {
 	const id = node.getAttribute('id');
 	const label = node.getAttribute('data-nav');
 	const newListItem = makeListItem(id, label);
