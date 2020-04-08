@@ -71,7 +71,7 @@ const makeScrolling = (targetID) => {
 // util to check element in the viewport
 const isInViewPort = (element) => {
 	const bounding = element.getBoundingClientRect();
-	return (
+	let inViewPort = (
 		bounding.top >= 0 &&
 		bounding.left >= 0 &&
 		bounding.bottom <=
@@ -79,6 +79,18 @@ const isInViewPort = (element) => {
 		bounding.right <=
 			(window.innerWidth || document.documentElement.clientWidth)
 	);
+	return {inViewPort}
+};
+
+// util to check element in the viewport
+const isInViewPort_mobile = (element, lastElTop) => {
+	const bounding = element.getBoundingClientRect();
+	let inViewPort = false;
+	if(lastElTop < 0 && (bounding.top > 0 && bounding.top < 150) && bounding.bottom >= (window.innerHeight || document.documentElement.clientHeight) && bounding.right <=
+			(window.innerWidth || document.documentElement.clientWidth)) {
+		inViewPort = true;
+	}
+	return {lastElTop: bounding.top, inViewPort }
 };
 
 // build the nav
@@ -105,9 +117,20 @@ linkItems.forEach((link, index) => {
 
 // handler function to update the navbar on scroll
 const fireNavUpdate = () => {
+	let lastElTop = -20;
+	const windowHeight = window.innerHeight;
 	sectionElement.forEach((section) => {
-		const inViewPort = isInViewPort(section);
-		if (inViewPort) {
+		let sectionEL = {};
+		if(windowHeight < 600) {
+			 sectionEL = isInViewPort_mobile(section, lastElTop);
+			lastElTop = sectionEL.lastElTop;
+		}
+		else {
+			 sectionEL = isInViewPort(section);
+		}
+		
+		if (sectionEL.inViewPort) {
+		//	console.log("section in view is:", section.getAttribute('id'));
 			const id = section.getAttribute('id');
 			// remove initial active nav
 			document
@@ -119,6 +142,7 @@ const fireNavUpdate = () => {
 			// udate current active
 			currentActive = id;
 		}
+		//console.log("section in view in mobile is:", section.getAttribute('id'));
 	});
 };
 
