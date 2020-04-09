@@ -82,11 +82,11 @@ const isInViewPort = (element) => {
 	return {inViewPort}
 };
 
-// util to check element in the viewport
+// util to check element in the viewport on mobile
 const isInViewPort_mobile = (element, lastElTop) => {
 	const bounding = element.getBoundingClientRect();
 	let inViewPort = false;
-	if(lastElTop < 0 && (bounding.top > 0 && bounding.top < 150) && bounding.bottom >= (window.innerHeight || document.documentElement.clientHeight) && bounding.right <=
+	if(lastElTop < 0 && (bounding.top > 0 && bounding.top < 200) && bounding.bottom >= (window.innerHeight || document.documentElement.clientHeight) && bounding.right <=
 			(window.innerWidth || document.documentElement.clientWidth)) {
 		inViewPort = true;
 	}
@@ -118,10 +118,10 @@ linkItems.forEach((link, index) => {
 // handler function to update the navbar on scroll
 const fireNavUpdate = () => {
 	let lastElTop = -20;
-	const windowHeight = window.innerHeight;
+	const windowWidth = window.innerWidth;
 	sectionElement.forEach((section) => {
 		let sectionEL = {};
-		if(windowHeight < 600) {
+		if(windowWidth < 600) {
 			 sectionEL = isInViewPort_mobile(section, lastElTop);
 			lastElTop = sectionEL.lastElTop;
 		}
